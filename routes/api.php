@@ -18,8 +18,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
+  
 });
 
     Route::post('login', [LoginController::class ,'login']);
     Route::post('signup', [RegisterController::class ,'signup']);
-    
+    Route::post('otp-verify', [LoginController::class,'otpVerify'])->name('otp-verify');
+  

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class RegisterController extends Controller
@@ -13,7 +14,8 @@ class RegisterController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'role_type' => 'required',
-            'phone_no' => 'required|unique:users',
+            'phone' => 'required|unique:users',
+            //'password' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -24,9 +26,11 @@ class RegisterController extends Controller
         }
 
         $user = new User([
-            'phone_no' => $request->phone_no,
+            'phone' => $request->phone,
             'role_type' => $request->role_type,
-            'name' => Str::random(8),
+            'first_name' => Str::random(8),
+            'last_name' => Str::random(8),
+            //'password' => Hash::make('password')
         ]);
 
         $user->save();

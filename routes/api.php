@@ -25,6 +25,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::post('login', [LoginController::class ,'login']);
     Route::post('signup', [RegisterController::class ,'signup']);
     Route::post('otp-verify', [LoginController::class,'otpVerify']);
-    Route::get('get-profile/{id}', [ProfileController::class,'edit']);
-    Route::post('update-profile', [ProfileController::class,'update']);
+
+    Route::group(['middleware' => 'auth:sanctum'], function(){
+        Route::get('get-profile/{id}', [ProfileController::class,'edit']);
+        Route::post('update-profile', [ProfileController::class,'update']);
+    });
+    
   

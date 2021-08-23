@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,5 +24,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
     Route::post('login', [LoginController::class ,'login']);
     Route::post('signup', [RegisterController::class ,'signup']);
-    Route::post('otp-verify', [LoginController::class,'otpVerify'])->name('otp-verify');
+    Route::post('otp-verify', [LoginController::class,'otpVerify']);
+    Route::get('get-profile/{id}', [ProfileController::class,'edit']);
+    Route::post('update-profile', [ProfileController::class,'update']);
   

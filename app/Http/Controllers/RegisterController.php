@@ -15,7 +15,6 @@ class RegisterController extends Controller
         $validator = Validator::make($request->all(), [
             'role_type' => 'required',
             'phone' => 'required|unique:users',
-            //'password' => 'required'
         ]);
 
         if ($validator->fails()) {

@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
-            $table->string('phone')->nullable();
+            $table->string('phone')->unique()->nullable();
             $table->string('otp')->nullable();
             $table->enum('status', ['0', '1'])->default('0')->comment('0=inactive,1=active');
             $table->string('role_type')->nullable();

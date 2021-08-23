@@ -74,13 +74,20 @@ class LoginController extends Controller
     public function otpVerify(Request $request)
     {
         $user = User::with('userProfile')->where([['otp', '=' ,$request->otp],['id', '=', $request->user_id]])->first();
+      
         if ($user) {
+            $is_profile = '0';
+            
+            if ($user->userProfile->profession != '' || $user->userProfile->company_name != '') {
+                $is_profile = '1';
+            }
             $user->status = '1';
             $user->otp = '';
             $user->save();
             
             $token = $user->createToken('my-app-token')->plainTextToken;
             $user->token = $token;
+            $user->is_profile = $is_profile;
 
             return response()->json([
                 'code' => 200,

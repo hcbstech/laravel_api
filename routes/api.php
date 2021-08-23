@@ -19,7 +19,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
-  
 });
 
     Route::post('login', [LoginController::class ,'login']);
@@ -27,8 +26,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::post('otp-verify', [LoginController::class,'otpVerify']);
 
     Route::group(['middleware' => 'auth:sanctum'], function(){
-        Route::get('get-profile/{id}', [ProfileController::class,'edit']);
+        Route::get('get-profile', [ProfileController::class,'getProfile']);
         Route::post('update-profile', [ProfileController::class,'update']);
     });
-    
+
   

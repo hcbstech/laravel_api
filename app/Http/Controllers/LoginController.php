@@ -74,11 +74,11 @@ class LoginController extends Controller
     public function otpVerify(Request $request)
     {
         $user = User::with('userProfile')->where([['otp', '=' ,$request->otp],['id', '=', $request->user_id]])->first();
-      
+        
         if ($user) {
             $is_profile = '0';
             
-            if ($user->userProfile->profession != '' || $user->userProfile->company_name != '') {
+            if ($user->userProfile->profession != '' && $user->userProfile->company_name != '') {
                 $is_profile = '1';
             }
             $user->status = '1';

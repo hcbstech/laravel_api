@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Countries;
+use App\Models\UserProfile;
 
-class UserProfile extends Model
+class Countries extends Model
 {
     use HasFactory;
 
@@ -15,15 +15,15 @@ class UserProfile extends Model
      *
      * @var array
      */
+    protected $table = "countries";
+    
     protected $fillable = [
-        'user_id',
-        'profession',
-        'company_name',
-        'meeting_type',
+        'name'
     ];
     
-    public function country()
+    public function userProfileCountry()
     {
-        return $this->belongsTo(Countries::userProfileCountry, 'country_id');
+        return $this->hasMany(UserProfile::country, 'id');
     }
+    
 }

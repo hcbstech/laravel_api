@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\UserProfile;
+use App\Models\Countries;
+use App\Models\States;
+use App\Models\Cities;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
@@ -17,11 +21,9 @@ class ProfileController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function getProfile()
+    public function getProfile($id = NULL)
     {
-        $id = Auth::user()->id;
-        $user = User::with('userProfile')->where('id',$id)->first();
-
+        $user = User::getUserDetail($id);
         if (!empty($user)) {
             return response()->json([
                 'code' => 200,
@@ -49,32 +51,14 @@ class ProfileController extends Controller
      */
     public function update(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|unique:users,email,' . $request->id,
-            'phone' => 'required|unique:users,phone,' . $request->id,
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => $validator->errors()
-            ], 401);
+        $input = $request->all();
+        $id = Auth::user()->id;
+        if(isset($input['is_profile'])) {
+            User::where('id',$id)->update(['is_profile'=>$input['is_profile']]);
         }
-        
-        $user = User::find($request->id)->update([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'role_type' => $request->role_type,
-        ]);
-
-        UserProfile::where('user_id', $request->id)->update([
-            "profession" => $request->profession,
-            "company_name" => $request->company_name,
-            "meeting_type" => $request->meeting_type
-        ]);
-
+        unset($input["is_profile"]);
+        UserProfile::where('user_id', $id )->update($input);
+        $user = User::getUserDetail($id);
         return response()->json([
             'code' => 200,
             'status' => true,
@@ -82,6 +66,36 @@ class ProfileController extends Controller
             'data' => [
                 'user' => $user
             ]
+        ]);
+    }
+    public function getCountries(Request $request)
+    {
+        $countries = Countries::all();
+        return response()->json([
+            'code' => 200,
+            'status' => true,
+            'message' => "Countries list.",
+            'data' => $countries
+        ]);
+    }
+    public function getStates(Request $request)
+    {
+        $states = States::where('country_id','=',$request->country_id)->get();
+        return response()->json([
+            'code' => 200,
+            'status' => true,
+            'message' => "States list.",
+            'data' => $states
+        ]);
+    }
+    public function getCities(Request $request)
+    {
+        $cities = Cities::where('state_id','=',$request->state_id)->get();
+        return response()->json([
+            'code' => 200,
+            'status' => true,
+            'message' => "Cities list.",
+            'data' => $cities
         ]);
     }
 }

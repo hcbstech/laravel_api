@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\RegisterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,13 +22,21 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-    Route::post('login', [LoginController::class ,'login']);
-    Route::post('signup', [RegisterController::class ,'signup']);
-    Route::post('otp-verify', [LoginController::class,'otpVerify']);
+Route::post('login', [LoginController::class ,'login']);
+Route::post('signup', [RegisterController::class ,'signup']);
+Route::post('otp-verify', [LoginController::class,'otpVerify']);
+Route::post('countries', [ProfileController::class,'getCountries']);
+Route::post('states', [ProfileController::class,'getStates']);
+Route::post('cities', [ProfileController::class,'getCities']);
 
-    Route::group(['middleware' => 'auth:sanctum'], function(){
-        Route::get('get-profile', [ProfileController::class,'getProfile']);
-        Route::post('update-profile', [ProfileController::class,'update']);
-    });
+Route::group(['middleware' => 'auth:sanctum'], function(){
+    Route::get('get-profile/{id?}', [ProfileController::class,'getProfile']);
+    Route::post('update-profile', [ProfileController::class,'update']);
+    Route::post('video-profile-update', [AccountController::class,'updateVideoProfile']);
+    Route::post('update-gallery', [AccountController::class,'updateGallery']);
+    Route::post('get-users-search', [AccountController::class,'getUsersBySearch']);
+    Route::get('get-gallery/{id?}', [AccountController::class,'getGallary']);
+    Route::get('get-users', [AccountController::class,'getUsers']);
+});
 
   

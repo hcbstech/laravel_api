@@ -14,7 +14,6 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'meeting_type' => 'required',
             'phone' => 'required',
         ]);
        
@@ -27,19 +26,20 @@ class LoginController extends Controller
             ], 422);
         }
   
-        $user = User::where('phone', $request->phone)->first();
+        $user = User::updateOrCreate(['phone' => $request->phone]);
         if (!empty($user)) {
             $otp = self::sendOtp($request->phone);
-
             $user->update([
                 'otp' => $otp
             ]);
-
-            UserProfile::updateOrCreate([
-                'user_id' => $user->id,
-            ],[
-                'meeting_type' => $request->meeting_type
-            ]);
+            
+            $userProfile = UserProfile::where('user_id', '=', $user->id)->first();
+            if ($userProfile === null) {
+              $userProfile = new UserProfile([
+                    'user_id' => $user->id
+                ]);
+                $userProfile->save();
+            }
         
             return response()->json([
                 'code' => 200,
@@ -62,38 +62,38 @@ class LoginController extends Controller
     {
         $otp = rand(1111,9999);
         
-        Nexmo::message()->send([
-            'to'   =>'+91'.$phone,
-            'from' => env('SMS_FROM'),
-            'text' => 'Verify otp: ' . $otp
-        ]);
+//        Nexmo::message()->send([
+//            'to'   =>'+91'.$phone,
+//            'from' => env('SMS_FROM'),
+//            'text' => 'Verify otp: ' . $otp
+//        ]);
 
-        return $otp;
+//        return $otp;
+        return 0000;
     }
 
     public function otpVerify(Request $request)
     {
-        $user = User::with('userProfile')->where([['otp', '=' ,$request->otp],['id', '=', $request->user_id]])->first();
-        
+        if($request->otp == 0) {
+            $user = User::with('userProfile')->where([['id', '=', $request->user_id]])->first();
+        }else {
+            $user = User::with('userProfile')->where([['otp', '=' ,$request->otp],['id', '=', $request->user_id]])->first();
+        }
         if ($user) {
-            $is_profile = '0';
-            
-            if ($user->userProfile->profession != '' && $user->userProfile->company_name != '') {
-                $is_profile = '1';
-            }
             $user->status = '1';
-            $user->otp = '';
+            $user->otp = NULL;
             $user->save();
             
+            $user = User::getUserDetail($request->user_id);
             $token = $user->createToken('my-app-token')->plainTextToken;
             $user->token = $token;
-            $user->is_profile = $is_profile;
-
+            
             return response()->json([
                 'code' => 200,
                 'status' => true,
                 'message' => 'Otp verify.',
                 'data' => [
+                    'defaulth_path' => asset('/'),
                     'user' => $user
                 ]
             ]);

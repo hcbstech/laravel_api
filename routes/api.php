@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\RegisterController;
 use Illuminate\Http\Request;
@@ -37,6 +38,11 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::post('get-users-search', [AccountController::class,'getUsersBySearch']);
     Route::get('get-gallery/{id?}', [AccountController::class,'getGallary']);
     Route::get('get-users', [AccountController::class,'getUsers']);
+    Route::get('get-meetings', [MeetingController::class,'getMeetings']);
+    Route::get('pending-meetings', [MeetingController::class,'pendingMeetings']);
+    Route::get('sent-meetings', [MeetingController::class,'sentMeetings']);
+    Route::post('store-meeting', [MeetingController::class,'store']);
+    Route::post('action-meeting', [MeetingController::class,'actionMeeting']);
 });
 
   

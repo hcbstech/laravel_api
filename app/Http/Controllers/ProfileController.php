@@ -24,22 +24,13 @@ class ProfileController extends Controller
     public function getProfile($id = NULL)
     {
         $user = User::getUserDetail($id);
-        if (!empty($user)) {
-            return response()->json([
-                'code' => 200,
-                'status' => true,
-                'data' => [
-                    'user' => $user
-                ]
-            ]);
-        } else {
-            return response()->json([
-                'code' => 422,
-                'status' => false,
-                'data' => [],
-                'message' => 'Invalid data. '
-            ], 401);
-        }
+        return response()->json([
+            'code' => 200,
+            'status' => true,
+            'data' => [
+                'user' => $user
+            ]
+        ]);
     }
 
     /**

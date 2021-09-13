@@ -120,22 +120,13 @@ class AccountController extends Controller
             $id = Auth::user()->id;
         }
         $gallery = UserGalleries::where('user_id',$id)->get();
-        if (!empty($gallery)) {
-            return response()->json([
-                'code' => 200,
-                'status' => true,
-                'data' => [
-                    'gallery' => $gallery
-                ]
-            ]);
-        } else {
-            return response()->json([
-                'code' => 422,
-                'status' => false,
-                'data' => [],
-                'message' => 'Data Not Found. '
-            ], 401);
-        }
+        return response()->json([
+            'code' => 200,
+            'status' => true,
+            'data' => [
+                'gallery' => $gallery
+            ]
+        ]);
     }
     public function getUsers()
     {
@@ -146,16 +137,6 @@ class AccountController extends Controller
                 ->where('is_profile','1')
                 ->where('is_video_profile','1')
                 ->get();
-//        $query = DB::table('users');
-//            $query->select('users.*', 'user_profiles.*');
-//            $query->join('user_profiles', 'user_profiles.user_id', '=', 'users.id') ;
-//            $query->where('users.id','!=',$id);
-//            $query->where('users.status',"1");
-//            $query->where('users.is_profile',1);
-//            $query->where('users.is_video_profile',1);
-//            $query->orderby('users.id', 'DESC'); 
-//            $users = $query->get();
-            
         if (count($users) > 0) {
             return response()->json([
                 'code' => 200,
@@ -166,11 +147,13 @@ class AccountController extends Controller
             ]);
         } else {
             return response()->json([
-                'code' => 422,
-                'status' => false,
-                'data' => [],
+                'code' => 200,
+                'status' => true,
+                'data' => [
+                    'user' => []
+                ],
                 'message' => 'Data Not Found.'
-            ], 401);
+            ]);
         }
     }
     public function getUsersBySearch(Request $request)
@@ -208,12 +191,14 @@ class AccountController extends Controller
                 ]
             ]);
         } else {
-            return response()->json([
-                'code' => 422,
-                'status' => false,
-                'data' => [],
-                'message' => 'Data Not Found. '
-            ], 401);
+           return response()->json([
+                'code' => 200,
+                'status' => true,
+                'data' => [
+                    'user' => []
+                ],
+                'message' => 'Data Not Found.'
+            ]);
         }
     }
 }

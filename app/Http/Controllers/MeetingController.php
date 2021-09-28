@@ -39,6 +39,7 @@ class MeetingController extends Controller
             $meeting->meetingtype_id = $request->type_id;
             $meeting->start_time = $request->approx_start_time;
             $meeting->end_time = $request->approx_end_time;
+            $meeting->note = $request->note;
             $meeting->venue = $request->venue;
             $meeting->save();
             return response()->json([
@@ -66,7 +67,7 @@ class MeetingController extends Controller
         $arary1 = [];
         $arary2 = [];
         // START SENDER
-//        $arary1 = Meeting::with('userProfile/1')
+//        $arary1 = Meeting::with('userProfileByPending')
 //                ->Where('receiver_id',$id)
 //                ->where('meeting_status',1)
 //                ->get();
@@ -82,7 +83,8 @@ class MeetingController extends Controller
                 $user['id'] = $m1->meeting_id;
                 $user['user_id'] = $m1->user_id;
                 $user['receiver_id'] = $m1->receiver_id;
-                $user['meetingtype_id'] = $m1->meetingtype_id;
+                $user['note'] = $m1->note;
+                $user['receiver_note'] = $m1->receiver_note;
                 $user['meeting_status'] = $m1->meeting_status;
                 $user['start_time'] = $m1->start_time;
                 $user['end_time'] = $m1->end_time;
@@ -124,7 +126,7 @@ class MeetingController extends Controller
         $met2 = DB::table('meetings')
                 ->select('user_profiles.*','user_profiles.id as up_id','meetings.*','meetings.id as meeting_id')
                 ->join('user_profiles', 'user_profiles.user_id', '=', 'meetings.receiver_id')
-                ->where('meetings.receiver_id', $id)
+                ->where('meetings.user_id', $id)
                 ->where('meetings.meeting_status',1)
                 ->get();
         if(!empty($met2)) {
@@ -133,6 +135,8 @@ class MeetingController extends Controller
                 $user['id'] = $m1->meeting_id;
                 $user['user_id'] = $m1->user_id;
                 $user['receiver_id'] = $m1->receiver_id;
+                $user['note'] = $m1->note;
+                $user['receiver_note'] = $m1->receiver_note;
                 $user['meetingtype_id'] = $m1->meetingtype_id;
                 $user['meeting_status'] = $m1->meeting_status;
                 $user['start_time'] = $m1->start_time;
@@ -201,7 +205,7 @@ class MeetingController extends Controller
                 ->select('user_profiles.*','user_profiles.id as up_id','meetings.*','meetings.id as meeting_id')
                 ->join('user_profiles', 'user_profiles.user_id', '=', 'meetings.user_id')
                 ->where('meetings.receiver_id', $id)
-                ->where('meetings.meeting_status',1)
+                ->where('meetings.meeting_status',2)
                 ->get();
         if(!empty($met1)) {
             $user = [];
@@ -209,6 +213,8 @@ class MeetingController extends Controller
                 $user['id'] = $m1->meeting_id;
                 $user['user_id'] = $m1->user_id;
                 $user['receiver_id'] = $m1->receiver_id;
+                $user['note'] = $m1->note;
+                $user['receiver_note'] = $m1->receiver_note;
                 $user['meetingtype_id'] = $m1->meetingtype_id;
                 $user['meeting_status'] = $m1->meeting_status;
                 $user['start_time'] = $m1->start_time;
@@ -274,8 +280,8 @@ class MeetingController extends Controller
         $met2 = DB::table('meetings')
                 ->select('user_profiles.*','user_profiles.id as up_id','meetings.*','meetings.id as meeting_id')
                 ->join('user_profiles', 'user_profiles.user_id', '=', 'meetings.receiver_id')
-                ->where('meetings.receiver_id', $id)
-                ->where('meetings.meeting_status',1)
+                ->where('meetings.user_id', $id)
+                ->where('meetings.meeting_status',2)
                 ->get();
         if(!empty($met2)) {
             $user = [];
@@ -283,6 +289,8 @@ class MeetingController extends Controller
                 $user['id'] = $m1->meeting_id;
                 $user['user_id'] = $m1->user_id;
                 $user['receiver_id'] = $m1->receiver_id;
+                $user['note'] = $m1->note;
+                $user['receiver_note'] = $m1->receiver_note;
                 $user['meetingtype_id'] = $m1->meetingtype_id;
                 $user['meeting_status'] = $m1->meeting_status;
                 $user['start_time'] = $m1->start_time;
@@ -342,6 +350,7 @@ class MeetingController extends Controller
         if($meetig) {
             $meetig->id = $request->meeting_id;
             $meetig->meeting_status = $request->status;
+            $meetig->receiver_note = $request->receiver_note;
             $meetig->save();
             if($request->status == 1) {
                 $message = "Request Accept Successfully.";

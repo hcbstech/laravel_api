@@ -12,7 +12,8 @@
         "laravel/framework": "^8.40",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
-        "nexmo/laravel": "^2.4"
+        "nexmo/laravel": "^2.4",
+        "paytm/paytmchecksum": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
@@ -26,7 +27,8 @@
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
+            "Database\\Seeders\\": "database/seeders/",
+            "paytm\\paytmchecksum\\": "paytmchecksum/"
         }
     },
     "autoload-dev": {

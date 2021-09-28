@@ -1,9 +1,9 @@
 <?php
-
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\RegisterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -43,6 +43,9 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::get('sent-meetings', [MeetingController::class,'sentMeetings']);
     Route::post('store-meeting', [MeetingController::class,'store']);
     Route::post('action-meeting', [MeetingController::class,'actionMeeting']);
+//    start transactions
+    Route::post('initialise', [TransactionController::class,'initialise']);
+    Route::post('callback', [TransactionController::class,'callback']);
 });
 
   
